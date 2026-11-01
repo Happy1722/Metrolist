@@ -12,6 +12,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.NavigationRailItemDefaults
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.unit.sp
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
@@ -29,6 +34,7 @@ import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.metrolist.music.ui.screens.Screens
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -57,9 +63,14 @@ fun AppNavigationRail(
     onSearchLongClick: (() -> Unit)? = null,
     onHomeLongHold: (() -> Unit)? = null,
 ) {
-    val containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
+    val containerColor = Color.Black
     val haptics = LocalHapticFeedback.current
     val viewConfiguration = LocalViewConfiguration.current
+    val railItemColors = NavigationRailItemDefaults.colors(
+        selectedIconColor = Color.White,
+        unselectedIconColor = Color(0xFFA7A7A7),
+        indicatorColor = Color.Transparent,
+    )
 
     NavigationRail(
         modifier = modifier,
@@ -115,6 +126,7 @@ fun AppNavigationRail(
                     // Long presses are handled via InteractionSource
                 },
                 interactionSource = interactionSource,
+                colors = railItemColors,
                 icon = {
                     Icon(
                         painter = painterResource(id = iconRes),
@@ -139,15 +151,26 @@ fun AppNavigationBar(
     onSearchLongClick: (() -> Unit)? = null,
     onHomeLongHold: (() -> Unit)? = null,
 ) {
-    val containerColor = if (pureBlack) Color.Black else MaterialTheme.colorScheme.surfaceContainer
-    val contentColor = if (pureBlack) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
     val haptics = LocalHapticFeedback.current
     val viewConfiguration = LocalViewConfiguration.current
+    val fadeBrush = Brush.verticalGradient(
+        0f to Color.Black.copy(alpha = 0.75f),
+        0.45f to Color.Black.copy(alpha = 0.95f),
+        1f to Color.Black,
+    )
+    val itemColors = NavigationBarItemDefaults.colors(
+        selectedIconColor = Color.White,
+        selectedTextColor = Color.White,
+        unselectedIconColor = Color(0xFFA7A7A7),
+        unselectedTextColor = Color(0xFFA7A7A7),
+        indicatorColor = Color.Transparent,
+    )
 
     NavigationBar(
-        modifier = modifier,
-        containerColor = containerColor,
-        contentColor = contentColor
+        modifier = modifier.background(fadeBrush),
+        containerColor = Color.Transparent,
+        contentColor = Color.White,
+        tonalElevation = 0.dp,
     ) {
         navigationItems.forEach { screen ->
             val isSelected = remember(currentRoute, screen.route) {
@@ -197,6 +220,7 @@ fun AppNavigationBar(
                     // Long presses are handled via InteractionSource
                 },
                 interactionSource = interactionSource,
+                colors = itemColors,
                 icon = {
                     Icon(
                         painter = painterResource(id = iconRes),
@@ -207,6 +231,7 @@ fun AppNavigationBar(
                     {
                         Text(
                             text = stringResource(screen.titleId),
+                            fontSize = 10.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )

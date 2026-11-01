@@ -129,7 +129,7 @@ fun AppearanceSettings(
     val (dynamicTheme, onDynamicThemeChange) =
         rememberPreference(
             DynamicThemeKey,
-            defaultValue = true,
+            defaultValue = false,
         )
     val (enableDynamicIcon, onEnableDynamicIconPrefChange) =
         rememberPreference(
@@ -167,7 +167,7 @@ fun AppearanceSettings(
     val (miniPlayerBackground, onMiniPlayerBackgroundChange) =
         rememberEnumPreference(
             MiniPlayerBackgroundStyleKey,
-            defaultValue = MiniPlayerBackgroundStyle.DEFAULT,
+            defaultValue = MiniPlayerBackgroundStyle.GRADIENT,
         )
 
     val availableMiniPlayerBackgroundStyles =
